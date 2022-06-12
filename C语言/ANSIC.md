@@ -4,16 +4,16 @@
 - [第零章-学好C语言从会写指针开始](#第零章-学好c语言从会写指针开始)
 - [第一章-导言](#第一章-导言)
   - [1.1 入门](#11-入门)
-    - [练习1-2](#练习1-2)
   - [1.2 变量与算数表达式](#12-变量与算数表达式)
-  - [标准化输入输出](#标准化输入输出)
+    - [`while`语句](#while语句)
+    - [标准化输入输出](#标准化输入输出)
     - [格式字符](#格式字符)
   - [除法](#除法)
   - [缩进](#缩进)
   - [数据类型的内存占用](#数据类型的内存占用)
   - [隐式转换](#隐式转换)
-  - [for循环语句](#for循环语句)
-  - [符号常量](#符号常量)
+  - [1.3 for循环语句](#13-for循环语句)
+  - [1.4 符号常量](#14-符号常量)
   - [字符流与文本](#字符流与文本)
     - [字符串常量](#字符串常量)
     - [文本流](#文本流)
@@ -114,6 +114,17 @@
   - [5.10 命令行参数`argc`和`argv`](#510-命令行参数argc和argv)
     - [例程剖析：实现`echo`](#例程剖析实现echo)
     - [例程剖析：实现`grep`](#例程剖析实现grep)
+  - [5.11 函数指针](#511-函数指针)
+    - [例程剖析：函数指针实现类型无关的`qsort`](#例程剖析函数指针实现类型无关的qsort)
+  - [5.12 复杂声明](#512-复杂声明)
+- [第六章-结构](#第六章-结构)
+  - [6.1 结构的基本知识](#61-结构的基本知识)
+  - [6.2 结构与函数](#62-结构与函数)
+    - [例程剖析：使用`struct`对矩形进行操作](#例程剖析使用struct对矩形进行操作)
+  - [6.3 结构数组](#63-结构数组)
+    - [例程剖析：统计C语言关键字出现的次数](#例程剖析统计c语言关键字出现的次数)
+  - [6.4 指向结构的指针](#64-指向结构的指针)
+  - [6.7 类型定义`typedef`](#67-类型定义typedef)
 
 未做但值得做的题目：
 1. P25 C语言语法检查器
@@ -153,28 +164,27 @@
 [`*++argv`](#510-命令行参数argc和argv)
 [`printf((argc>1)?"%s ":"%s", *++argv);`](#510-命令行参数argc和argv)
 
+>函数指针的运用
+[`qsort((void **) lineptr, 0, nlines-1, (int (*)(void*, void*)) (numeric?numcmp:strcmp)));`](#511-函数指针)
+
+
 # 第一章-导言
 
 ## 1.1 入门
 
-### 练习1-2
-\c什么效果？
-```c
-#include<stdio.h>
-int main(void){
-    printf("\c");
-    return 0;
-}
-```
-`unknow escape sequence`
+略
 
 ## 1.2 变量与算数表达式
 
-## 标准化输入输出
+### `while`语句
+
+进入`while`循环之前先检查条件是否满足
+
+### 标准化输入输出
 
 `scanf()`
 `printf()`
-这两个函数都不是C语言的一部分，但ANSI标准定义了他们  
+这两个函数都**不是C语言的一部分**，但ANSI标准定义了他们  
 对于符合标准的编译器和库，他们的行为是一致的。
 
 ### 格式字符
@@ -227,13 +237,13 @@ C编译器不关心缩进，但是正确的缩进和保留适当空格的程序�
 这两个表达式，算数运算符和逻辑运算符两边的数据类型不一致  
 C语言在进行计算的时候会将数据类型隐式转换为同类型数据
 
-## for循环语句
+## 1.3 for循环语句
 
 `for(fhar=0; fhar<=300; fhar=fhar+20)`
 第一个赋值语句在循环之前执行，且只执行一次  
 第二部分是循环的测试或者条件部分，for语句将对该条件求值，如果为True，则执行循环体，随后执行第三部分，随后再对条件语句进行求值，在进入循环体之前，需要先检查是否满足fhar<=300这一条件
 
-## 符号常量
+## 1.4 符号常量
 
 `#define 名字 替换文本`
 `define`将进行*文本替换操作*
@@ -241,6 +251,8 @@ C语言在进行计算的时候会将数据类型隐式转换为同类型数据
 ## 字符流与文本
 
 ### 字符串常量
+
+用双引号括起来的
 
 以**空字符**结尾的字符数组
 `"hello\n"`
@@ -492,7 +504,7 @@ unsigned类型的数总是正数或者为0，遵循算数模2
 
 五种算数运算符 +-*/%
 
-取模运算不能运用于浮点数（float, double）
+取模不能用于浮点数（float, double）
 在有**负操作数**的情况下，**整数除法**和**取模**的结果的符号取决于机器的实现
 
 ## 2.6关系运算符
@@ -922,7 +934,7 @@ void ungetch(int){
 }
 ```
 
->自己的项目头文件中，往往是宏定义+函数签名的组合。中等规模的程序最好只用一个头文件来共享对象，较大的程序使用更多的头文件，需要进行组织他们。
+>自己的项目头文件中，往往是宏定义+函数签名的组合。中等规模的程序最好只用一个头文件来共享对象，较大的程序使用更多的头文件，需要组织他们。
 
 ## 4.6 静态变量
 
@@ -1764,6 +1776,17 @@ char *aname[] = {"illegal month", "Jan"};
 所以可选参数为`argv[k]`，其中$k \in [1, argc-1]$  
 ANSI要求`argv[argc] = NULL`，在这种情况下，`argc`的值顺理成章地等于传进来的`参数值+1`这个1是程序名字，这算是ANSI对C语言数组索引从0开始的一个修正
 
+```bash
+batman@LAPTOP-3KIH8KMK:/mnt/c/code/ANSIC_src/echo_$ ./echo_
+1
+batman@LAPTOP-3KIH8KMK:/mnt/c/code/ANSIC_src/echo_$ ./echo_ 1
+2
+batman@LAPTOP-3KIH8KMK:/mnt/c/code/ANSIC_src/echo_$ ./echo_ 1 2
+3
+batman@LAPTOP-3KIH8KMK:/mnt/c/code/ANSIC_src/echo_$ ./echo_ 1 2 1
+4
+```
+
 ### 例程剖析：实现`echo`
 
 ```c
@@ -1792,3 +1815,250 @@ int main(int argc, char *argv[]){
 
 ### 例程剖析：实现`grep`
 
+通过命令行的第一个参数指定模式
+
+## 5.11 函数指针
+
+函数不是变量，但可以定义指向函数的指针，这种指针可以被赋值，被存放在数组中，传递给函数以及作为返回值
+
+### 例程剖析：函数指针实现类型无关的`qsort`
+
+排序过程往往包含三部分：
+1. 判断两个对象之间的比较操作
+2. 颠倒对象次序的交换操作
+3. 用于比较和交换的排序算法
+
+通常来说想要让第一和第二步骤和对象的类型无关，可以使用函数指针（感觉像Java里的比较器）
+
+```c
+#include<stdio.h>
+#include<string.h>
+
+//待排序的最大行数
+#define MAXLINES 5000
+char *lineptr[MAXLINES] /*指向文本行的指针*/
+
+int readlines(char *lineptr[], int nlines);
+void writelines(char *lineptr[], int nlines);
+
+//类型无关的快排
+void qsort(void *lineptr, int left, int right, int (*comp)(void *, void *));
+
+//比较函数
+int numcmp(char *, char*);
+
+int main(int argc, char *argv[])
+{
+    int nlines;
+    int numeric = 0;
+
+    if(argc>1 && strcmp(argv[1], "-n") == 0)
+    //第一个参数为n，则进行数值比较
+        numeric = 1;
+    if((nlines = readlines(lineptr, MAXLINES)) >= 0){
+        //把numcmp和strcmp函数强制转换了
+        qsort((void **) lineptr, 0, nlines-1, 
+            (int (*)(void*, void*)) (numeric?numcmp:strcmp)));
+        
+        writelines(lineptr, nlines);
+        return 0;
+    }
+    else{
+        printf("input too big to sort\n");
+        return 1;
+    }
+}
+```
+
+>为什么使用`void *`作为数组的类型？
+
+因为任何类型的指针转化为`void *`再转换回来不会丢失任何信息
+
+>qsort核心代码段的重构，仔细观察如何使用函数指针
+
+```c
+void qsort(void *v[], int left, int right, int (*)(comp)(void *, void *)){
+    int i, last;
+    void swap(void *v[], int, int);
+
+    if(left >= right){
+        return;
+    }
+
+    swap(v, left, left+(right-left)/2);
+    last = left;
+    for(i=left+1;i<=right;i++){
+        //重点，高度类似数组名*arr
+        if((*comp)(v[left], v[i])>0){
+            swap(v, ++last, i);
+        }
+    }
+    swap(v, left, last);
+    qsort(v, 0, last-1, comp);
+    qsort(v, last+1, right, comp);
+}
+```
+
+在参数表中的指针数组VS在函数返回值中的指针数组
+`void *v[]`或`void**`
+
+注意，strcmp和numcmp都是函数的**地址**，类似数组名（数组名前面也不需要加&来进行取地址运算）
+
+## 5.12 复杂声明
+
+`*`运算优先级低于`()`
+```c
+//函数声明，这个函数返回int指针
+int *f();
+//函数指针声明，这个函数返回int对象
+int (*f)();
+```
+
+# 第六章-结构
+
+## 6.1 结构的基本知识
+
+关键字`struct`引入结构声明
+`point`作为`结构标记`其实可以省略，`结构标记`有助于省略声明
+注意在结构声明的结尾需要加上`;`
+```c
+struct point{
+    int x;
+    int y;
+};
+```
+
+结构中定义的变量称为`成员变量`，`成员变量`，`结构标记`和`普通变量`可以采用相同的名字，不同结构中的成员可以使用相同的名字（显然地）
+
+>如何声明结构变量
+
+类似于普通变量的声明：
+```c
+struct {...} x, y, z...;
+int x, y, z...;
+
+//使用前述的结构标记进行变量声明
+struct point x, y, z;
+
+//结构体的初始化
+struct point x = {100, 200};
+```
+
+>结构成员运算符
+
+通过`.`运算符访问结构成员
+
+>结构嵌套
+
+```c
+struct rect{
+    struct point pt1;
+    struct point pt2;
+}
+//初始化嵌套结构成员
+struct rect screen;
+//访问嵌套结构成员
+screen.pt1.x = 3;
+```
+
+## 6.2 结构与函数
+
+### 例程剖析：使用`struct`对矩形进行操作
+
+如果结构比较大，使用指针的开销会小很多`struct point *pp;`
+
+```c
+struct point *pp;
+(*pp).x = 1;
+
+struct point *pp, origin;
+pp = &origin;
+```
+
+为了简化结构指针的使用，C语言推出了`->`运算符
+运算符`.`和`->`都是从左到右结合，所以以下这些表达式效果一致
+```c
+struct rect r, *rp = &r;
+
+r.pt1.x;
+rp->pt1.x;
+(r.pt1).x;
+(rp->pt1).x;
+```
+
+在所有的运算符之间，`.`,`->`,`()`,`[]`运算优先级最高
+```c
+//以下语句将会增加len的长度
+*p->len;
+//以下语句将会先对len执行操作，再对p++，此处可以省略括号
+(p++)->len
+//先读取str指针所指向的值，再对str++
+*p->str++
+//先读取str指向的值，再对p++
+*p++->str
+```
+
+## 6.3 结构数组
+
+### 例程剖析：统计C语言关键字出现的次数
+
+```c
+//用于记录关键字出现次数的结构数组
+struct key{
+    char *word;
+    int count;
+} keytab[NKEYS];
+
+//或者这样分步声明
+struct key{char *word; int count;};
+struct key keytab[NKEY];
+
+//结构数组的初始化
+struct key{
+    char *word;
+    int count;
+} keytab[] = {
+    "auto", 0, 
+    "break", 0, 
+    "while", 0
+};
+
+//更为精确的是加上花括号
+struct key{
+    char *word;
+    int count;
+} keytab[] = {
+    {"auto", 0}, 
+    {"break", 0}, 
+    {"while", 0}
+};
+```
+
+`sizeof`运算符是C语言的**编译时**一元运算符（终于等到你哈哈）`sizeof(type_name)`或者`sizeof(object)`将返回一个整型`size_t`，等于传入的类型或者对象所占字节长度，强调是编译时的一元运算符，意味着sizeof函数不能在条件编译`#if`中使用，预处理器不会对类型名进行分析，但预处理器不会计算`#define`语句中的表达式，所以在`#define`语句中可以写
+
+之前我们使用`#define`宏定义将`NKEYS`常量写死了，这样的程序不具备好的鲁棒性，现在通过`sizeof`动态分配结构数组的长度：我们有两种写法
+`#define NKEYS (sizeof(keytab)/sizeof(struct key))`
+`#define NKEYS (sizeof(keytab)/sizeof(keytab[0]))`
+
+另一种不是那么优雅的解决方法是在结构数组初始化的时候，在数组的尾巴上插入一个空指针，在初始化完毕后遍历数组，随后计算出结构数组的长度，这两种方法的效率有待考虑（目前不清楚`sizeof`的实现机制，但直接告诉我前者效率更高），除了效率方面的考量，这种写法使**程序和结构体定义无关**
+
+## 6.4 指向结构的指针
+
+如何优雅地给函数签名
+```c
+struct key *
+binsearch(char *word, struct key *tab, int n);
+```
+
+## 6.7 类型定义`typedef`
+
+用于建立新的数据类型名
+
+```c
+typedef int length;
+length len, maxlen;
+typedef char *String;
+
+String p, lineptr[MSXLINES];
+p = (String) malloc(100);
+```
