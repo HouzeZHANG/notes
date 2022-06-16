@@ -62,8 +62,8 @@
     - [directory Tree目录树](#directory-tree目录树)
 - [第三部分-学习shell与shell script](#第三部分-学习shell与shell-script)
   - [第十一章-正则表达式与文件格式化处理](#第十一章-正则表达式与文件格式化处理)
+    - [re手册摘要](#re手册摘要)
     - [11.1 开始之前，什么是正则表达式](#111-开始之前什么是正则表达式)
-      - [11.2.4 基础正则表达式字符集合](#1124-基础正则表达式字符集合)
 
 # 第一部分Linux的规则与安装
 
@@ -503,11 +503,27 @@ usr = UNIX Software Resource
 Regular expression正则表达式
 用于在管理主机的时候，精简处理日常事务
 
+### re手册摘要
+
+[Python re 文档](https://docs.python.org/zh-cn/3/library/re.html)
+
+正则表达式可以拼接
+
+|符号|效果|案例|
+|---|---|---|
+|`.`|任意字符||
+|`^`|开头||
+|`$`|串尾或者串尾`\n`之前的字符||
+|`*`|对其前面的正则符号匹配零到无数次|`ab*`意味着`a`,`abb`|
+|`+`|一到无数次（和`*`相对）||
+|`?`|有或无||
+|`{m}`|匹配至少m次重复||
+|`{m, n}`|上下界，可以只写`m`或`n`其一||
+|`[]`|字符集合|`[a-z]`,`[0-5]`,`[a\-z]`（转义`-`）|
+|`|`|正则表达式1或者正则表达式2|`RE1|RE2`|
+
+
+
 ### 11.1 开始之前，什么是正则表达式
 
 `cp`,`ls`并不支持正则表达式，他们只支持linux的**通配符**（**wild card**），wild card通配符只是linux bash操作接口的一个功能
-
-#### 11.2.4 基础正则表达式字符集合
-
-![](https://img-blog.csdnimg.cn/20200802220727417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNzk5MjM2,size_16,color_FFFFFF,t_70)
-
