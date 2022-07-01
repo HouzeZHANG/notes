@@ -16,13 +16,7 @@ https://blog.csdn.net/huangfei711/article/details/51220382#:~:text=1771-,step%20
 
 
 
-### 在进行modification添加的时候，不能直接在db脚本的最后追加新的删表建表语句，因为直接删除父表是会报错的
-
-
-
-6000欧元一平米，aix临近市中心的meuble
-
-
+### 在进行modification添加的时候，不能直接在db脚本的最后追加新的删表建表语句，直接删除父表是会报错的
 
 ### 需求1：
 
